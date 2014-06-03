@@ -1,0 +1,228 @@
+package org.expeditee.items.widgets;
+
+import java.awt.Color;
+import java.awt.Polygon;
+import java.util.List;
+
+import org.expeditee.items.Item;
+import org.expeditee.items.Line;
+import org.expeditee.items.Text;
+
+/**
+ * Widget edges define the boundries of an interactive widget.
+ * 
+ * @author Brook Novak
+ */
+public class WidgetEdge extends Line {
+
+	private InteractiveWidget _widgetSource;
+
+	WidgetEdge(WidgetCorner start, WidgetCorner end, int id,
+			InteractiveWidget widgetSource) {
+		super(start, end, id);
+		
+		if (widgetSource == null)
+			throw new NullPointerException("widgetSource");
+		_widgetSource = widgetSource;
+	}
+
+	public InteractiveWidget getWidgetSource() {
+		return _widgetSource;
+	}
+
+	@Override
+	public Item forceMerge(Item merger, int mouseX, int mouseY) {
+		return null; // Don't allow breaking up of borders
+	}
+
+	@Override
+	public void toggleArrow() {
+		// Ignore
+	}
+
+	@Override
+	public void toggleDashed(int amount) {
+		// Ignore
+	}
+
+	@Override
+	public void toggleArrowHeadRatio(int amount) {
+		// Ignore
+	}
+
+	@Override
+	public void toggleArrowHeadLength(int amount) {
+		// Ignore
+	}
+
+	@Override
+	public void setAnnotation(boolean val) {
+		// Ignore
+	}
+
+	@Override
+	public boolean isAnnotation() {
+		return false;
+	}
+
+	@Override
+	public void setArrow(float length, double ratio, double nib_perc) {
+	}
+
+	@Override
+	public void setArrowhead(Polygon arrow) {
+	}
+
+	@Override
+	public void setArrowheadLength(float length) {
+	}
+
+	@Override
+	public void setArrowheadRatio(double ratio) {
+	}
+
+	@Override
+	public void setBottomShadowColor(Color bottom) {
+	}
+
+	@Override
+	public void setFillColor(Color c) {
+	}
+
+	@Override
+	public void setFillPattern(String patternLink) {
+	}
+
+	@Override
+	public void setSize(float size) {
+	}
+	
+	@Override
+	public void setFormula(String formula) {
+	}
+	
+	@Override
+	public void setAnchorTop(Float anchor) {
+		_widgetSource.setAnchorTop(anchor);
+	}
+
+	@Override
+	public void setAnchorBottom(Float anchor) {
+		_widgetSource.setAnchorBottom(anchor);
+	}
+
+	@Override
+	public void setAnchorLeft(Float anchor) {
+		_widgetSource.setAnchorLeft(anchor);
+	}
+
+	@Override
+	public void setAnchorRight(Float anchor) {
+		_widgetSource.setAnchorRight(anchor);
+	}
+
+	@Override
+	public boolean isAnchored() {
+		return _widgetSource.isAnchored();
+	}
+
+	@Override
+	public boolean isAnchoredX() {
+		return _widgetSource.isAnchoredX();
+	}
+
+	@Override
+	public boolean isAnchoredY() {
+		return _widgetSource.isAnchoredY();
+	}
+	
+	@Override
+	public Float getAnchorTop() {
+		return _widgetSource.getSource().getAnchorTop();
+	}
+
+	@Override
+	public Float getAnchorBottom() {
+		return _widgetSource.getSource().getAnchorBottom();
+	}
+	
+	@Override
+	public Float getAnchorLeft() {
+		return _widgetSource.getSource().getAnchorLeft();
+	}
+
+	@Override
+	public Float getAnchorRight() {
+		return _widgetSource.getSource().getAnchorRight();
+	}
+	
+	@Override
+	public boolean contains(int x, int y) {
+		return super.contains(x, y) && !_widgetSource.getBounds().contains(x, y);
+	}
+
+	@Override
+	public Polygon getEnclosedShape() {
+		return getStartItem().getEnclosedShape();
+	}
+
+	@Override
+	public String getLink() {
+		return _widgetSource.getSource().getLink();
+	}
+
+	@Override
+	public void setLink(String link) {
+		_widgetSource.setLink(link, null);
+	}
+	
+	/**
+	 * @param link
+	 *          The new frame link. Can be null (for no link)
+	 * 
+	 * @param linker
+	 * 			The text item creating the link. Null if not created from
+	 * 			a text item.
+	 */
+	public void setLink(String link, Text linker) {
+		_widgetSource.setLink(link, linker);
+	}
+
+	@Override
+	public void setThickness(float newThickness, boolean setConnected) {
+		if (_widgetSource != null) {
+			float minThickness = _widgetSource.getMinimumBorderThickness();
+			if(newThickness < minThickness)
+				newThickness = minThickness;
+			super.setThickness(newThickness, setConnected);
+			_widgetSource.setSourceThickness(newThickness, false);
+		}
+	}	
+	
+	@Override
+	public void setBackgroundColor(Color c) {
+		if (_widgetSource != null) {
+			super.setBackgroundColor(c);
+			_widgetSource.setBackgroundColor(c);
+		}
+	}
+	
+	@Override
+	public void setColor(Color c) {
+		if (_widgetSource != null) {
+			super.setColor(c);
+			_widgetSource.setSourceBorderColor(c);
+		}
+	}
+	
+	@Override
+	public void setData(List<String> data) {
+		_widgetSource.setSourceData(data);
+	}
+	
+	@Override
+	public String getName() {
+		return _widgetSource.getName();
+	}
+	
+}
